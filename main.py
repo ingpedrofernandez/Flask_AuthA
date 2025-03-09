@@ -102,19 +102,37 @@ def register():
             method='pbkdf2:sha256',
             salt_length=8
         )
-        new_user = Roleuser(
-            email=request.form.get('email'),
-            password=hash_and_salted_password,
-            name=request.form.get('name'),
-            imagelink=destination_path,
-            role=request.form.get('role')
+
+        if email == "ingpedro1007@gmail.com":
+            new_user = Roleuser(
+              email=request.form.get('email'),
+              password=hash_and_salted_password,
+              name=request.form.get('name'),
+              imagelink=destination_path,
+              role='admin'
+              )
+
+            db.session.add(new_user)
+            db.session.commit()
+            login_user(new_user)
+            return redirect(url_for("admin"))
+        else:
+            new_user = Roleuser(
+                email=request.form.get('email'),
+                password=hash_and_salted_password,
+                name=request.form.get('name'),
+                imagelink=destination_path,
+                role=request.form.get('role')
 
             )
 
-        db.session.add(new_user)
-        db.session.commit()
-        login_user(new_user)
-        return redirect(url_for("secrets"))
+            db.session.add(new_user)
+            db.session.commit()
+            login_user(new_user)
+            return redirect(url_for("user"))
+
+
+
 
     return render_template("register.html", logged_in=current_user.is_authenticated)
 
@@ -125,7 +143,7 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
 
-        con = sql.connect("instance/flask_auth3.db")
+        con = sql.connect("instance/flask_auth4.db")
         con.row_factory = sql.Row
         cur = con.cursor()
         cur.execute("select * from roleuser where email=?", (email,))
@@ -150,7 +168,7 @@ def login():
                 return redirect(url_for('admin', photo=photo))
             else:
                 login_user(user)
-                return redirect(url_for('secrets'))
+                return redirect(url_for('user'))
 
     return render_template("login.html", logged_in=current_user.is_authenticated)
 
@@ -163,13 +181,13 @@ def admin():
     user = result.scalar()
     return render_template("admin.html", name=current_user.email, role=current_user.role, logged_in=True, users=user)
 
-@app.route('/secrets')
+@app.route('/user')
 @login_required
-def secrets():
+def user():
     print(current_user.email)
     result = db.session.execute(db.select(Roleuser).where(Roleuser.email == current_user.email))
     user = result.scalar()
-    return render_template("secrets.html", name=current_user.email, role=current_user.role, logged_in=True, users=user)
+    return render_template("user.html", name=current_user.email, role=current_user.role, logged_in=True, users=user)
 
 @app.route('/users')
 @login_required
@@ -177,7 +195,7 @@ def users():
     result = db.session.execute(db.select(Roleuser).where(Roleuser.email == current_user.email))
     user = result.scalar()
 
-    con = sql.connect("instance/flask_auth3.db")
+    con = sql.connect("instance/flask_auth4.db")
     con.row_factory = sql.Row
     cur = con.cursor()
     cur.execute("select * from user")
@@ -190,7 +208,7 @@ def role_users():
     result = db.session.execute(db.select(Roleuser).where(Roleuser.email == current_user.email))
     user = result.scalar()
 
-    con = sql.connect("instance/flask_auth3.db")
+    con = sql.connect("instance/flask_auth4.db")
     con.row_factory = sql.Row
     cur = con.cursor()
     cur.execute("select * from roleuser")
@@ -222,7 +240,7 @@ def show_user(id,name,role):
     result = db.session.execute(db.select(Roleuser).where(Roleuser.email == current_user.email))
     user = result.scalar()
 
-    con = sql.connect("instance/flask_auth3.db")
+    con = sql.connect("instance/flask_auth4.db")
     con.row_factory = sql.Row
     cur = con.cursor()
     cur.execute("select * from user where id=?", (id,))
@@ -257,7 +275,7 @@ def add_user(name, role):
 
 
 
-            con = sql.connect("instance/flask_auth3.db")
+            con = sql.connect("instance/flask_auth4.db")
             cur = con.cursor()
             cur.execute("insert into user(name,mobile,email,imagelink) values (?,?,?,?)",
                         (name, mobile, email, destination_path))
@@ -297,7 +315,7 @@ def edit_user(id,name,role):
             destination_path = f"static/uploads/{fileobj.filename}"
             fileobj.save(destination_path)
 
-            con = sql.connect("instance/flask_auth3.db")
+            con = sql.connect("instance/flask_auth4.db")
             cur = con.cursor()
             cur.execute("update user set name=?,mobile=?,email=?,imagelink=? where id=?",
                         (name, mobile, email, destination_path, id))
@@ -309,7 +327,7 @@ def edit_user(id,name,role):
             return redirect(url_for("users"))
 
 
-    con = sql.connect("instance/flask_auth3.db")
+    con = sql.connect("instance/flask_auth4.db")
     con.row_factory = sql.Row
     cur = con.cursor()
     cur.execute("select * from user where id=?", (id,))
@@ -319,7 +337,7 @@ def edit_user(id,name,role):
 
 @app.route("/delete_user/<string:id>", methods=['GET'])
 def delete_user(id):
-    con = sql.connect("instance/flask_auth3.db")
+    con = sql.connect("instance/flask_auth4.db")
     cur = con.cursor()
     cur.execute("delete from user where id=?", (id,))
     con.commit()
@@ -329,7 +347,7 @@ def delete_user(id):
 
 @app.route("/delete_user_role/<string:id>", methods=['GET'])
 def delete_user_role(id):
-    con = sql.connect("instance/flask_auth3.db")
+    con = sql.connect("instance/flask_auth4.db")
     cur = con.cursor()
     cur.execute("delete from roleuser where id=?", (id,))
     con.commit()
@@ -379,7 +397,7 @@ def edit_user_role(name,role):
             destination_path = f"static/uploads_roles/{fileobj.filename}"
             fileobj.save(destination_path)
 
-            con = sql.connect("instance/flask_auth3.db")
+            con = sql.connect("instance/flask_auth4.db")
             cur = con.cursor()
             cur.execute("update roleuser set name=?,email=?,password=?,imagelink=? where id=?",
                         (name, email, hash_and_salted_password, destination_path , id))
@@ -391,7 +409,7 @@ def edit_user_role(name,role):
             flash('only images are accepted', 'danger')
             return redirect(url_for("users"))
 
-    con = sql.connect("instance/flask_auth3.db")
+    con = sql.connect("instance/flask_auth4.db")
     con.row_factory = sql.Row
     cur = con.cursor()
     cur.execute("select * from user where id=?", (id,))
