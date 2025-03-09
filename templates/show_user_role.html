@@ -1,0 +1,109 @@
+<html>
+  <head>
+    <title>Flask - SQLite </title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/body.css')}}"/>
+    <style>
+    .nav-link {
+    color:#FFFFC2;
+    }
+    img {
+    border-radius: 50%;
+    }
+    .myDiv {
+    padding-top: 50px;
+    text-align: center;
+    }
+  </style>
+  </head>
+  <body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+  <a class="navbar-brand" style="color:#FFFFC2" href="#">Flask Authentication</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-list-4" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+      </button>
+  <div class="collapse navbar-collapse" id="navbar-list-4" >
+      <ul class="navbar-nav ml-auto">
+        <!-- Hide the Login/Registration navigation for logged-in users -->
+          {% if not logged_in: %}
+          <li class="nav-item">
+            <a class="nav-link" style="color:#FFFFC2" href="{{ url_for('login') }}">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color:#FFFFC2" href="{{ url_for('register') }}">Register</a>
+          </li>
+          {% endif %}
+          {% if logged_in: %}
+          <li class="nav-item">
+              <a class="nav-link" style="color:#FFFFC2">{{name}}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color:#FFFFC2">Role: {{role}}</a>
+          </li>
+          <li class="nav-item dropdown dropleft">
+             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+           {% set new_str = users.imagelink[6:] %}
+           <img style='border:3px solid #FFFFC2' src="{{ url_for('static', filename=new_str) }}" width="40" height="40">
+           </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" style="
+               margin-top: 20px; margin-left: -100px;">
+              <a class="dropdown-item" href="{{ url_for('users') }}">Users</a>
+                  <div class="dropdown-divider"></div>
+              {% if role=='admin': %}
+              <a class="dropdown-item" href="{{ url_for('role_users') }}">Role Users</a>
+                  <div class="dropdown-divider"></div>
+              {% endif %}
+              {% set id = users.id %}
+               <a class="dropdown-item" href="{{ url_for('show_user_role', id=id, name=name, role=role) }}">Show User Role</a>
+                  <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{{ url_for('logout') }}">Log Out</a>
+              </div>
+          </li>
+           {% endif %}
+      </ul>
+  </div>
+  </nav>
+    <div class='container pt-3'>
+      {% with messages=get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category,message in messages %}
+            <div class='alert alert-{{category}}'>{{message}}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      {% block body %}
+  <br>
+  <h3 class='text-center'>SHOW USER ROLE</h3>
+   <br><br>
+  <table class='table table-bordered'>
+    <thead>
+      <th>Id</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>File</th>
+      <th>Role</th>
+      <th>Edit</th>
+    </thead>
+    <tbody>
+        <tr>
+          <td>{{users.id}}</td>
+          <td>{{users.name}}</td>
+          <td>{{users.email}}</td>
+          <td>{{users.imagelink}}</td>
+          <td>{{users.role}}</td>
+          <td><a href='{{url_for("edit_user_role",id=users.id, name=name, role=role)}}' class='btn btn-primary'>Edit</a></td></tr>
+    </tbody>
+  </table>
+<div class="myDiv">
+  {% set new_str = users.imagelink[6:] %}
+  <img style='border:5px solid #FFFFC2' src="{{ url_for('static', filename=new_str) }}" width="350" height="350">
+</div>
+    </tbody>
+  </table>
+      {% endblock %}
+    </div>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="box">
+	<h1>Register</h1>
+    <form enctype="multipart/form-data" action="{{ url_for('register') }}" method="post">
+    	<input type="text" name="name" placeholder="Name" required="required" />
+		<input type="email" name="email" placeholder="Email" required="required" />
+        <input type="password" name="password" placeholder="Password" required="required" />
+        <input type='file' name='file' placeholder="Photo" required="required">
+        <input type="hidden" name="role" value="user"/>
+        <button type="submit" class="btn btn-primary btn-block btn-large">Sign me up.</button>
+    </form>
+</div>
+{% endblock %}

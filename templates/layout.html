@@ -1,0 +1,84 @@
+<html>
+  <head>
+    <title>Flask - SQLite </title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </head>
+  <body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-dark text-white">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" style="color:#FFFFC2" href="{{ url_for('return_home', name=name, role=role) }}">Home</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" style="color:#FFFFC2">{{name}}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" style="color:#FFFFC2">Role: {{role}}</a>
+        </li>
+        <li class="nav-item">
+          <a class="navbar-brand" href="#">
+           {% set new_str = users.imagelink[6:] %}
+          <img style='border:3px solid #FFFFC2' src="{{ url_for('static', filename=new_str) }}" alt="" width="40" height="40" class="d-inline-block align-text-top">
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class='container pt-3'>
+      {% with messages=get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category,message in messages %}
+            <div class='alert alert-{{category}}'>{{message}}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      {% block body %}
+      <h3 class='text-center text-muted mb-3'>Flask - SQLite CRUD Application</h3>
+  {% if role == 'admin': %}
+  <a href="{{ url_for('return_home', name=name, role=role) }}" class='btn btn-primary'>Back</a><br><br>
+    <p class='text-right'><a href='{{url_for("add_user", name=name, role=role)}}' class='btn btn-success '>+Add User</a></p>
+  {% endif %}
+  <table class='table table-bordered'>
+    <thead>
+      <th>Id</th>
+      <th>Name</th>
+      <th>Mobile</th>
+      <th>Email</th>
+      <th>File</th>
+      <th>Photo</th>
+      <th>Show</th>
+      {% if role == 'admin': %}
+        <th>Edit</th>
+        <th>Delete</th>
+      {% endif %}
+    </thead>
+    <tbody>
+      {% for row in datas %}
+        <tr>
+          <td>{{loop.index}}</td>
+          <td>{{row.name}}</td>
+          <td>{{row.mobile}}</td>
+          <td>{{row.email}}</td>
+          <td>{{row.imagelink}}</td>
+          <td><img src='{{row.imagelink}}' width="50" height="50"></td>
+          <td><a href='{{url_for("show_user",id=row.id, name=name, role=role)}}' class='btn btn-info'>Show</a></td>
+          {% if role == 'admin': %}
+            <td><a href='{{url_for("edit_user",id=row.id, name=name, role=role)}}' class='btn btn-primary'>Edit</a></td>
+            <td><a href='{{url_for("delete_user",id=row.id)}}' class='btn btn-danger' onclick='return confirm("Are You Sure")'>Delete</a></td>
+          {% endif %}
+        </tr>
+      {%endfor%}
+    </tbody>
+  </table>
+      {% endblock %}
+    </div>
+  </body>
+</html>

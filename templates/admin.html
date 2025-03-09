@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Flask Authentication</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css')}}"/>
+    <script src="static/js/jquery.js"></script>
+        <script src="static/js/scripts.js"></script>
+    <style>
+        .nav-link {
+        color:#FFFFC2;
+        }
+        img {
+        border-radius: 50%;
+        }
+    </style>
+  </head>
+  <body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+  <a class="navbar-brand" style="color:#FFFFC2" href="#">Flask Authentication</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-list-4" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+      </button>
+  <div class="collapse navbar-collapse" id="navbar-list-4" >
+      <ul class="navbar-nav ml-auto">
+        <!-- Hide the Login/Registration navigation for logged-in users -->
+          {% if not logged_in: %}
+          <li class="nav-item">
+            <a class="nav-link" style="color:#FFFFC2" href="{{ url_for('login') }}">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color:#FFFFC2" href="{{ url_for('register') }}">Register</a>
+          </li>
+          {% endif %}
+          {% if logged_in: %}
+          <li class="nav-item">
+              <a class="nav-link" style="color:#FFFFC2">{{name}}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color:#FFFFC2">Role: {{role}}</a>
+          </li>
+          <li class="nav-item dropdown dropleft">
+             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+           {% set new_str = users.imagelink[6:] %}
+           <img style='border:3px solid #FFFFC2' src="{{ url_for('static', filename=new_str) }}" width="40" height="40">
+           </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" style="
+               margin-top: 70px; margin-right: -70px;">
+              <a class="dropdown-item" href="{{ url_for('users') }}">Users</a>
+                  <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{{ url_for('role_users') }}">Role Users</a>
+                  <div class="dropdown-divider"></div>
+              {% set id = users.id %}
+               <a class="dropdown-item" href="{{ url_for('show_user_role', id=id, name=name, role=role) }}">Show User Role</a>
+                  <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{{ url_for('logout') }}">Log Out</a>
+              </div>
+          </li>
+           {% endif %}
+      </ul>
+  </div>
+  </nav>
+    {% block content %}
+    <!--Display the user's name in the h1 title-->
+<div class="container">
+  <h1 class="title">ADMIN AREA</h1>
+  <BR><BR>
+  <h1 class="title">Welcome, {{name}}</h1>
+  <h1 class="title">Role: {{role}}</h1>
+  <a href="{{ url_for('download') }}" target="_blank" >Download Your File</a>
+</div>
+    {% endblock %}
+  </body>
+</html>
