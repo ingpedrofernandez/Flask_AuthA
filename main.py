@@ -6,9 +6,9 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 import sqlite3 as sql
-#import psycopg
-#import psycopg2
-#import gunicorn
+import psycopg
+import psycopg2
+import gunicorn
 import os
 from dotenv import load_dotenv
 import requests
@@ -418,4 +418,4 @@ def edit_user_role(name,role):
     return render_template("edit_user_role.html", name=name, role=role, logged_in=True, users=user, datas=data, id=id)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
