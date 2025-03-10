@@ -273,13 +273,21 @@ def add_user(name, role):
             destination_path = f"static/uploads/{fileobj.filename}"
             fileobj.save(destination_path)
 
+            new_user = User(
+                name=request.form.get('name'),
+                mobile=request.form.get('mobile'),
+                email=request.form.get('email'),
+                imagelink=destination_path
+            )
 
+            db.session.add(new_user)
+            db.session.commit()
 
-            con = sql.connect("instance/flask_auth4.db")
-            cur = con.cursor()
-            cur.execute("insert into user(name,mobile,email,imagelink) values (?,?,?,?)",
-                        (name, mobile, email, destination_path))
-            con.commit()
+            #con = sql.connect("instance/flask_auth4.db")
+            #cur = con.cursor()
+            #cur.execute("insert into user(name,mobile,email,imagelink) values (?,?,?,?)",
+                #        (name, mobile, email, destination_path))
+            #con.commit()
             flash('User Added', 'success')
             return redirect(url_for("users"))
 
