@@ -264,20 +264,20 @@ def add_user(name, role):
         mobile = request.form['mobile']
         email = request.form['email']
 
-        destination_path = ""
+        destination_path2 = ""
         fileobj = request.files['file']
         file_extensions = ["JPG", "JPEG", "PNG", "GIF"]
         uploaded_file_extension = fileobj.filename.split(".")[1]
         # validating file extension
         if (uploaded_file_extension.upper() in file_extensions):
-            destination_path = f"static/uploads/{fileobj.filename}"
-            fileobj.save(destination_path)
+            destination_path2 = f"static/uploads/{fileobj.filename}"
+            fileobj.save(destination_path2)
 
             new_user = User(
                 name=request.form.get('name'),
                 mobile=request.form.get('mobile'),
                 email=request.form.get('email'),
-                imagelink=destination_path
+                imagelink=destination_path2
             )
 
             db.session.add(new_user)
