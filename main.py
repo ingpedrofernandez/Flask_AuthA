@@ -18,6 +18,7 @@ import platform
 
 #pip freeze > requirements.txt
 #psycopg==3.2.5
+#
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "kira"
