@@ -105,7 +105,7 @@ def register():
         )
 
         if email == "ingpedro1007@gmail.com":
-            new_user = Roleuser(
+            new_role_user = Roleuser(
               email=request.form.get('email'),
               password=hash_and_salted_password,
               name=request.form.get('name'),
@@ -113,12 +113,12 @@ def register():
               role='admin'
               )
 
-            db.session.add(new_user)
+            db.session.add(new_role_user)
             db.session.commit()
-            login_user(new_user)
+            login_user(new_role_user)
             return redirect(url_for("admin"))
         else:
-            new_user = Roleuser(
+            new_role_user = Roleuser(
                 email=request.form.get('email'),
                 password=hash_and_salted_password,
                 name=request.form.get('name'),
@@ -127,9 +127,9 @@ def register():
 
             )
 
-            db.session.add(new_user)
+            db.session.add(new_role_user)
             db.session.commit()
-            login_user(new_user)
+            login_user(new_role_user)
             return redirect(url_for("user"))
 
 
