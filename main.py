@@ -55,6 +55,7 @@ class Roleuser(UserMixin, db.Model):
     role: Mapped[str] = mapped_column(String(50))
 
 class User(UserMixin, db.Model):
+    __tablename__ = "user_account"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(1000))
     mobile: Mapped[int] = mapped_column(Integer)
@@ -199,7 +200,7 @@ def users():
     con = sql.connect("instance/flask_auth4.db")
     con.row_factory = sql.Row
     cur = con.cursor()
-    cur.execute("select * from user")
+    cur.execute("select * from user_account")
     data = cur.fetchall()
     return render_template("users.html", name=current_user.email, role=current_user.role, logged_in=True, users=user, datas=data)
 
