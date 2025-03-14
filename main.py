@@ -55,7 +55,6 @@ class Roleuser(UserMixin, db.Model):
     role: Mapped[str] = mapped_column(String(50))
 
 class User(UserMixin, db.Model):
-    __tablename__ = "user_account"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(1000))
     mobile: Mapped[int] = mapped_column(Integer)
@@ -106,7 +105,7 @@ def register():
         )
 
         if email == "ingpedro1007@gmail.com":
-            new_role_user = Roleuser(
+            new_user = Roleuser(
               email=request.form.get('email'),
               password=hash_and_salted_password,
               name=request.form.get('name'),
@@ -114,12 +113,12 @@ def register():
               role='admin'
               )
 
-            db.session.add(new_role_user)
+            db.session.add(new_user)
             db.session.commit()
-            login_user(new_role_user)
+            login_user(new_user)
             return redirect(url_for("admin"))
         else:
-            new_role_user = Roleuser(
+            new_user = Roleuser(
                 email=request.form.get('email'),
                 password=hash_and_salted_password,
                 name=request.form.get('name'),
@@ -128,9 +127,9 @@ def register():
 
             )
 
-            db.session.add(new_role_user)
+            db.session.add(new_user)
             db.session.commit()
-            login_user(new_role_user)
+            login_user(new_user)
             return redirect(url_for("user"))
 
 
@@ -200,7 +199,7 @@ def users():
     con = sql.connect("instance/flask_auth4.db")
     con.row_factory = sql.Row
     cur = con.cursor()
-    cur.execute("select * from user_account")
+    cur.execute("select * from user")
     data = cur.fetchall()
     return render_template("users.html", name=current_user.email, role=current_user.role, logged_in=True, users=user, datas=data)
 
