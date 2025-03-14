@@ -61,12 +61,6 @@ class User(UserMixin, db.Model):
     email: Mapped[str] = mapped_column(String(100), unique=True)
     imagelink: Mapped[str] = mapped_column(String(1000))
 
-class Accountuser(UserMixin, db.Model):
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    name: Mapped[str] = mapped_column(String(1000))
-    mobile: Mapped[int] = mapped_column(Integer)
-    email: Mapped[str] = mapped_column(String(100), unique=True)
-    imagelink: Mapped[str] = mapped_column(String(1000))
 
 with app.app_context():
     db.create_all()
@@ -206,7 +200,7 @@ def users():
     con = sql.connect("instance/flask_auth4.db")
     con.row_factory = sql.Row
     cur = con.cursor()
-    cur.execute("select * from accountuser")
+    cur.execute("select * from user")
     data = cur.fetchall()
     return render_template("users.html", name=current_user.email, role=current_user.role, logged_in=True, users=user, datas=data)
 
@@ -281,7 +275,7 @@ def add_user(name, role):
             destination_path2 = f"static/uploads/{fileobj.filename}"
             fileobj.save(destination_path2)
 
-            new_user = Accountuser(
+            new_user = User(
                 name=request.form.get('name'),
                 mobile=request.form.get('mobile'),
                 email=request.form.get('email'),
