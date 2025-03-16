@@ -54,7 +54,7 @@ class Roleuser(UserMixin, db.Model):
     imagelink: Mapped[str] = mapped_column(String(1000))
     role: Mapped[str] = mapped_column(String(50))
 
-class Contacts(db.Model):
+class Contacts(UserMixin, db.Model):
     __tablename__ = "contacts"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(1000))
