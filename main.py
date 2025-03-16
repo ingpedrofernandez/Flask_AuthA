@@ -29,7 +29,7 @@ app.config['SECRET_KEY'] = "kira"
 class Base(DeclarativeBase):
     pass
 
-
+#
 #app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///flask_auth4.db"
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://flask_auth4_ix9i_user:r0hkxQsNqjCJvsz6cVY2vehIQkoSXoRF@dpg-cvbgrndsvqrc73c7e0tg-a/flask_auth4_ix9i"
 
