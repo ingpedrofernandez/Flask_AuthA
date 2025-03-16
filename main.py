@@ -23,15 +23,18 @@ import platform
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "kira"
 
+
 # CREATE DATABASE
 
 
 class Base(DeclarativeBase):
     pass
 
+
 #
 #app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///flask_auth4.db"
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://flask_auth4_ix9i_user:r0hkxQsNqjCJvsz6cVY2vehIQkoSXoRF@dpg-cvbgrndsvqrc73c7e0tg-a/flask_auth4_ix9i"
+app.config[
+    'SQLALCHEMY_DATABASE_URI'] = "postgresql://flask_auth4_ix9i_user:r0hkxQsNqjCJvsz6cVY2vehIQkoSXoRF@dpg-cvbgrndsvqrc73c7e0tg-a/flask_auth4_ix9i"
 
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
@@ -54,6 +57,7 @@ class Roleuser(UserMixin, db.Model):
     imagelink: Mapped[str] = mapped_column(String(1000))
     role: Mapped[str] = mapped_column(String(50))
 
+
 class Contacts(UserMixin, db.Model):
     __tablename__ = "contacts"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -71,11 +75,14 @@ with app.app_context():
 def home():
     return render_template("index.html", logged_in=current_user.is_authenticated)
 
+
 @app.route("/return_home/<string:name>, <string:role>", methods=['POST', 'GET'])
-def return_home(name,role):
+def return_home(name, role):
     result = db.session.execute(db.select(Roleuser).where(Roleuser.email == current_user.email))
     user = result.scalar()
-    return render_template("return_index.html", name=name, role=role, logged_in=current_user.is_authenticated, users=user)
+    return render_template("return_index.html", name=name, role=role, logged_in=current_user.is_authenticated,
+                           users=user)
+
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -108,12 +115,12 @@ def register():
 
         if email == "ingpedro1007@gmail.com":
             new_user = Roleuser(
-              email=request.form.get('email'),
-              password=hash_and_salted_password,
-              name=request.form.get('name'),
-              imagelink=destination_path,
-              role='admin'
-              )
+                email=request.form.get('email'),
+                password=hash_and_salted_password,
+                name=request.form.get('name'),
+                imagelink=destination_path,
+                role='admin'
+            )
 
             db.session.add(new_user)
             db.session.commit()
@@ -133,9 +140,6 @@ def register():
             db.session.commit()
             login_user(new_user)
             return redirect(url_for("user"))
-
-
-
 
     return render_template("register.html", logged_in=current_user.is_authenticated)
 
@@ -166,7 +170,7 @@ def login():
         else:
             if user.role == 'admin':
                 print(user.imagelink)
-                photo=user.imagelink
+                photo = user.imagelink
                 login_user(user)
                 return redirect(url_for('admin', photo=photo))
             else:
@@ -184,6 +188,7 @@ def admin():
     user = result.scalar()
     return render_template("admin.html", name=current_user.email, role=current_user.role, logged_in=True, users=user)
 
+
 @app.route('/user')
 @login_required
 def user():
@@ -191,6 +196,7 @@ def user():
     result = db.session.execute(db.select(Roleuser).where(Roleuser.email == current_user.email))
     user = result.scalar()
     return render_template("user.html", name=current_user.email, role=current_user.role, logged_in=True, users=user)
+
 
 @app.route('/users')
 @login_required
@@ -203,7 +209,9 @@ def users():
     cur = con.cursor()
     cur.execute("select * from contacts")
     data = cur.fetchall()
-    return render_template("users.html", name=current_user.email, role=current_user.role, logged_in=True, users=user, datas=data)
+    return render_template("users.html", name=current_user.email, role=current_user.role, logged_in=True, users=user,
+                           datas=data)
+
 
 @app.route('/role_users')
 @login_required
@@ -216,7 +224,8 @@ def role_users():
     cur = con.cursor()
     cur.execute("select * from roleuser")
     data = cur.fetchall()
-    return render_template("role_users.html", name=current_user.email, role=current_user.role, logged_in=True, users=user, datas=data)
+    return render_template("role_users.html", name=current_user.email, role=current_user.role, logged_in=True,
+                           users=user, datas=data)
 
 
 @app.route('/logout')
@@ -229,13 +238,12 @@ def logout():
 @app.route('/download')
 @login_required
 def download():
-
     # return send_from_directory('/static/files/', 'cheat_sheet.pdf')
     return send_from_directory('static', path="files/cheat_sheet.pdf")
 
 
 @app.route("/show_user/<string:id>, <string:name>, <string:role>", methods=['POST', 'GET'])
-def show_user(id,name,role):
+def show_user(id, name, role):
     #url = 'http://127.0.0.1:5000/edit_user/1?name=ingpedro1007@gmail.com&role=admin'
     #parsed_url = urlparse(url)
     #name = parse_qs(parsed_url.query)['name'][0]
@@ -259,8 +267,6 @@ def add_user(name, role):
     #role = parse_qs(parsed_url.query)['role'][0]
     result = db.session.execute(db.select(Roleuser).where(Roleuser.email == current_user.email))
     user = result.scalar()
-
-
 
     if request.method == 'POST':
         name = request.form['name']
@@ -289,7 +295,7 @@ def add_user(name, role):
             #con = sql.connect("instance/flask_auth4.db")
             #cur = con.cursor()
             #cur.execute("insert into user(name,mobile,email,imagelink) values (?,?,?,?)",
-                #        (name, mobile, email, destination_path))
+            #        (name, mobile, email, destination_path))
             #con.commit()
             flash('Contact Added', 'success')
             return redirect(url_for("users"))
@@ -301,9 +307,8 @@ def add_user(name, role):
     return render_template("add_user.html", name=name, role=role, users=user)
 
 
-
 @app.route("/edit_user/<string:id>, <string:name>, <string:role>", methods=['POST', 'GET'])
-def edit_user(id,name,role):
+def edit_user(id, name, role):
     #url = 'http://127.0.0.1:5000/edit_user/1?name=ingpedro1007@gmail.com&role=admin'
     #parsed_url = urlparse(url)
     #name = parse_qs(parsed_url.query)['name'][0]
@@ -337,7 +342,6 @@ def edit_user(id,name,role):
             flash('only images are accepted', 'danger')
             return redirect(url_for("users"))
 
-
     con = sql.connect("instance/flask_auth4.db")
     con.row_factory = sql.Row
     cur = con.cursor()
@@ -365,8 +369,9 @@ def delete_user_role(id):
     flash('User Role Deleted', 'warning')
     return redirect(url_for("role_users"))
 
+
 @app.route("/show_user_role/<string:name>, <string:role>", methods=['POST', 'GET'])
-def show_user_role(name,role):
+def show_user_role(name, role):
     #url = 'http://127.0.0.1:5000/edit_user/1?name=ingpedro1007@gmail.com&role=admin'
     #parsed_url = urlparse(url)
     #name = parse_qs(parsed_url.query)['name'][0]
@@ -377,8 +382,9 @@ def show_user_role(name,role):
 
     return render_template("show_user_role.html", name=name, role=role, logged_in=True, users=user, id=id)
 
+
 @app.route("/edit_user_role/<string:name>, <string:role>", methods=['POST', 'GET'])
-def edit_user_role(name,role):
+def edit_user_role(name, role):
     #url = 'http://127.0.0.1:5000/edit_user/1?name=ingpedro1007@gmail.com&role=admin'
     #parsed_url = urlparse(url)
     #name = parse_qs(parsed_url.query)['name'][0]
@@ -411,7 +417,7 @@ def edit_user_role(name,role):
             con = sql.connect("instance/flask_auth4.db")
             cur = con.cursor()
             cur.execute("update roleuser set name=?,email=?,password=?,imagelink=? where id=?",
-                        (name, email, hash_and_salted_password, destination_path , id))
+                        (name, email, hash_and_salted_password, destination_path, id))
             con.commit()
             logout()
             flash('User Updated', 'success')
@@ -427,6 +433,7 @@ def edit_user_role(name,role):
     data = cur.fetchone()
 
     return render_template("edit_user_role.html", name=name, role=role, logged_in=True, users=user, datas=data, id=id)
+
 
 if __name__ == "__main__":
     app.run(debug=False)
