@@ -54,8 +54,8 @@ class Roleuser(UserMixin, db.Model):
     imagelink: Mapped[str] = mapped_column(String(1000))
     role: Mapped[str] = mapped_column(String(50))
 
-class User(UserMixin, db.Model):
-    __tablename__ = "user"
+class Contacts(db.Model):
+    __tablename__ = "contacts"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(1000))
     mobile: Mapped[int] = mapped_column(Integer)
@@ -201,7 +201,7 @@ def users():
     con = sql.connect("instance/flask_auth4.db")
     con.row_factory = sql.Row
     cur = con.cursor()
-    cur.execute("select * from user")
+    cur.execute("select * from contacts")
     data = cur.fetchall()
     return render_template("users.html", name=current_user.email, role=current_user.role, logged_in=True, users=user, datas=data)
 
@@ -276,14 +276,14 @@ def add_user(name, role):
             destination_path2 = f"static/uploads/{fileobj.filename}"
             fileobj.save(destination_path2)
 
-            new_user = User(
+            new_contact = Contacts(
                 name=request.form.get('name'),
                 mobile=request.form.get('mobile'),
                 email=request.form.get('email'),
                 imagelink=destination_path2
             )
 
-            db.session.add(new_user)
+            db.session.add(new_contact)
             db.session.commit()
 
             #con = sql.connect("instance/flask_auth4.db")
@@ -291,7 +291,7 @@ def add_user(name, role):
             #cur.execute("insert into user(name,mobile,email,imagelink) values (?,?,?,?)",
                 #        (name, mobile, email, destination_path))
             #con.commit()
-            flash('User Added', 'success')
+            flash('Contact Added', 'success')
             return redirect(url_for("users"))
 
         else:
