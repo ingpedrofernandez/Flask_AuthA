@@ -59,7 +59,6 @@ class Roleuser(UserMixin, db.Model):
 
 
 class Contacts(UserMixin, db.Model):
-    __tablename__ = "contacts"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(1000))
     mobile: Mapped[int] = mapped_column(Integer)
