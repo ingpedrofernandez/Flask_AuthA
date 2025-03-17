@@ -33,7 +33,7 @@ class Base(DeclarativeBase):
 
 #
 #app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///flask_auth4.db"
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://flask_auth4_geb7_user:bSGoYasqNhif6XyLWfKvTrvQJPdQzi3j@dpg-cvboc7t6l47c73ag7hj0-a/flask_auth4_geb7"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://flask_auth4_8w5c_user:mEvPOy1fz2GSefr3O4DsVk7wWcOhV1Zh@dpg-cvboml56l47c73agacjg-a/flask_auth4_8w5c"
 
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
