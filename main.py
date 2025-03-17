@@ -34,7 +34,7 @@ class Base(DeclarativeBase):
 #
 #app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///flask_auth4.db"
 app.config[
-    'SQLALCHEMY_DATABASE_URI'] = "postgresql://flask_auth4_ix9i_user:r0hkxQsNqjCJvsz6cVY2vehIQkoSXoRF@dpg-cvbgrndsvqrc73c7e0tg-a/flask_auth4_ix9i"
+    'SQLALCHEMY_DATABASE_URI'] = "postgresql://flask_auth4_geb7_user:bSGoYasqNhif6XyLWfKvTrvQJPdQzi3j@dpg-cvboc7t6l47c73ag7hj0-a/flask_auth4_geb7"
 
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
@@ -58,7 +58,16 @@ class Roleuser(UserMixin, db.Model):
     role: Mapped[str] = mapped_column(String(50))
 
 
-class Contacts(UserMixin, db.Model):
+class User(UserMixin, db.Model):
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(1000))
+    mobile: Mapped[int] = mapped_column(Integer)
+    email: Mapped[str] = mapped_column(String(100), unique=True)
+    imagelink: Mapped[str] = mapped_column(String(1000))
+
+
+class Contacts(db.Model):
+    __tablename__ = 'contacts'
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(1000))
     mobile: Mapped[int] = mapped_column(Integer)
@@ -113,7 +122,7 @@ def register():
         )
 
         if email == "ingpedro1007@gmail.com":
-            new_user = Roleuser(
+            new_role_user = Roleuser(
                 email=request.form.get('email'),
                 password=hash_and_salted_password,
                 name=request.form.get('name'),
@@ -121,12 +130,12 @@ def register():
                 role='admin'
             )
 
-            db.session.add(new_user)
+            db.session.add(new_role_user)
             db.session.commit()
-            login_user(new_user)
+            login_user(new_role_user)
             return redirect(url_for("admin"))
         else:
-            new_user = Roleuser(
+            new_role_user = Roleuser(
                 email=request.form.get('email'),
                 password=hash_and_salted_password,
                 name=request.form.get('name'),
@@ -135,9 +144,9 @@ def register():
 
             )
 
-            db.session.add(new_user)
+            db.session.add(new_role_user)
             db.session.commit()
-            login_user(new_user)
+            login_user(new_role_user)
             return redirect(url_for("user"))
 
     return render_template("register.html", logged_in=current_user.is_authenticated)
@@ -281,14 +290,14 @@ def add_user(name, role):
             destination_path2 = f"static/uploads/{fileobj.filename}"
             fileobj.save(destination_path2)
 
-            new_contact = Contacts(
+            new_user = Contacts(
                 name=request.form.get('name'),
                 mobile=request.form.get('mobile'),
                 email=request.form.get('email'),
                 imagelink=destination_path2
             )
 
-            db.session.add(new_contact)
+            db.session.add(new_user)
             db.session.commit()
 
             #con = sql.connect("instance/flask_auth4.db")
