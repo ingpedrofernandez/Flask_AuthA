@@ -33,8 +33,7 @@ class Base(DeclarativeBase):
 
 #
 #app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///flask_auth4.db"
-app.config[
-    'SQLALCHEMY_DATABASE_URI'] = "postgresql://flask_auth4_geb7_user:bSGoYasqNhif6XyLWfKvTrvQJPdQzi3j@dpg-cvboc7t6l47c73ag7hj0-a/flask_auth4_geb7"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://flask_auth4_geb7_user:bSGoYasqNhif6XyLWfKvTrvQJPdQzi3j@dpg-cvboc7t6l47c73ag7hj0-a/flask_auth4_geb7"
 
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
@@ -65,14 +64,6 @@ class User(UserMixin, db.Model):
     email: Mapped[str] = mapped_column(String(100), unique=True)
     imagelink: Mapped[str] = mapped_column(String(1000))
 
-
-class Contacts(db.Model):
-    __tablename__ = 'contacts'
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    name: Mapped[str] = mapped_column(String(1000))
-    mobile: Mapped[int] = mapped_column(Integer)
-    email: Mapped[str] = mapped_column(String(100), unique=True)
-    imagelink: Mapped[str] = mapped_column(String(1000))
 
 
 with app.app_context():
@@ -215,7 +206,7 @@ def users():
     con = sql.connect("instance/flask_auth4.db")
     con.row_factory = sql.Row
     cur = con.cursor()
-    cur.execute("select * from contacts")
+    cur.execute("select * from user")
     data = cur.fetchall()
     return render_template("users.html", name=current_user.email, role=current_user.role, logged_in=True, users=user,
                            datas=data)
@@ -290,7 +281,7 @@ def add_user(name, role):
             destination_path2 = f"static/uploads/{fileobj.filename}"
             fileobj.save(destination_path2)
 
-            new_user = Contacts(
+            new_user = User(
                 name=request.form.get('name'),
                 mobile=request.form.get('mobile'),
                 email=request.form.get('email'),
