@@ -65,6 +65,28 @@ class User(UserMixin, db.Model):
     imagelink: Mapped[str] = mapped_column(String(1000))
 
 
+#connect to SQLite
+con = sql.connect('instance/flask_auth4.db')
+
+#Create a Connection
+cur = con.cursor()
+
+#Drop users table if already exsist.
+cur.execute("DROP TABLE IF EXISTS user")
+
+#Create user table  in db_web database
+sql ='''CREATE TABLE "user" (
+	"id"	INTEGER PRIMARY KEY AUTOINCREMENT,
+	"name"	TEXT,
+	"mobile"	INT,
+	"email"	TEXT,
+	"imagelink"	VARCHAR
+)'''
+cur.execute(sql)
+
+#commit changes
+con.commit()
+
 
 with app.app_context():
     db.create_all()
@@ -281,21 +303,21 @@ def add_user(name, role):
             destination_path2 = f"static/uploads/{fileobj.filename}"
             fileobj.save(destination_path2)
 
-            new_user = User(
-                name=request.form.get('name'),
-                mobile=request.form.get('mobile'),
-                email=request.form.get('email'),
-                imagelink=destination_path2
-            )
+            #new_user = User(
+              #  name=request.form.get('name'),
+             #   mobile=request.form.get('mobile'),
+              #  email=request.form.get('email'),
+              #  imagelink=destination_path2
+            #)
 
-            db.session.add(new_user)
-            db.session.commit()
+            #db.session.add(new_user)
+            #db.session.commit()
 
-            #con = sql.connect("instance/flask_auth4.db")
-            #cur = con.cursor()
-            #cur.execute("insert into user(name,mobile,email,imagelink) values (?,?,?,?)",
-            #        (name, mobile, email, destination_path))
-            #con.commit()
+            con = sql.connect("instance/flask_auth4.db")
+            cur = con.cursor()
+            cur.execute("insert into user(name,mobile,email,imagelink) values (?,?,?,?)",
+                    (name, mobile, email, destination_path2))
+            con.commit()
             flash('Contact Added', 'success')
             return redirect(url_for("users"))
 
