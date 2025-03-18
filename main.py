@@ -65,27 +65,6 @@ class User(UserMixin, db.Model):
     imagelink: Mapped[str] = mapped_column(String(1000))
 
 
-#connect to SQLite
-con = sql.connect('instance/flask_auth4.db')
-
-#Create a Connection
-cur = con.cursor()
-
-#Drop users table if already exsist.
-cur.execute("DROP TABLE IF EXISTS user")
-
-#Create user table  in db_web database
-sql ='''CREATE TABLE "user" (
-	"id"	INTEGER PRIMARY KEY AUTOINCREMENT,
-	"name"	TEXT,
-	"mobile"	INT,
-	"email"	TEXT,
-	"imagelink"	VARCHAR
-)'''
-cur.execute(sql)
-
-#commit changes
-con.commit()
 
 
 with app.app_context():
