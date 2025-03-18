@@ -297,7 +297,7 @@ def add_user(name, role):
             cur.execute("insert into user(name,mobile,email,imagelink) values (?,?,?,?)",
                     (name, mobile, email, destination_path2))
             con.commit()
-            flash('Contact Added', 'success')
+            flash('User Added', 'success')
             return redirect(url_for("users"))
 
         else:
