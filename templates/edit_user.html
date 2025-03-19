@@ -67,7 +67,12 @@
           <input type='text' name='email' required class='form-control' value='{{datas.email}}'>
         </div>
         <div class='form-group'>
-          <label>Photo</label>
+          <label>Photo</label><br>
+          {% set new_str = datas.imagelink[6:] %}
+          <img style='border-radius: 0%;' src="{{ url_for('static', filename=new_str) }}" width="80" height="80">
+        </div>
+        <div class='form-group'>
+          <label>New Photo</label>
           <input type='file' name='file' required class='form-control'>
         </div>
         <input type='submit' value='Submit' class='btn btn-primary'>
