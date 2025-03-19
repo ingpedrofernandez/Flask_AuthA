@@ -308,7 +308,7 @@ def add_user(name, role):
 
 
 @app.route("/edit_user/<string:id>, <string:name>, <string:role>", methods=['POST', 'GET'])
-def edit_user(id, name, role):
+def edit_user(id,name,role):
     #url = 'http://127.0.0.1:5000/edit_user/1?name=ingpedro1007@gmail.com&role=admin'
     #parsed_url = urlparse(url)
     #name = parse_qs(parsed_url.query)['name'][0]
@@ -324,31 +324,41 @@ def edit_user(id, name, role):
 
         destination_path = ""
         fileobj = request.files['file']
-        file_extensions = ["JPG", "JPEG", "PNG", "GIF"]
-        uploaded_file_extension = fileobj.filename.split(".")[1]
-        # validating file extension
-        if (uploaded_file_extension.upper() in file_extensions):
-            destination_path = f"static/uploads/{fileobj.filename}"
-            fileobj.save(destination_path)
 
-            con = sql.connect("instance/flask_auth4.db")
-            cur = con.cursor()
-            cur.execute("update user set name=?,mobile=?,email=?,imagelink=? where id=?",
-                        (name, mobile, email, destination_path, id))
-            con.commit()
-            flash('User Updated', 'success')
-            return redirect(url_for("users"))
+        if fileobj:
+            file_extensions = ["JPG", "JPEG", "PNG", "GIF"]
+            uploaded_file_extension = fileobj.filename.split(".")[1]
+            # validating file extension
+            if (uploaded_file_extension.upper() in file_extensions):
+                destination_path = f"static/uploads/{fileobj.filename}"
+                fileobj.save(destination_path)
+
+                con = sql.connect("instance/flask_auth3.db")
+                cur = con.cursor()
+                cur.execute("update user set name=?,mobile=?,email=?,imagelink=? where id=?",
+                            (name, mobile, email, destination_path, id))
+                con.commit()
+                flash('User Updated with New Photo', 'success')
+                return redirect(url_for("users"))
+            else:
+                flash('only images are accepted', 'danger')
+                return redirect(url_for("users"))
         else:
-            flash('only images are accepted', 'danger')
-            return redirect(url_for("users"))
+             con = sql.connect("instance/flask_auth3.db")
+             cur = con.cursor()
+             cur.execute("update user set name=?,mobile=?,email=? where id=?",
+                            (name, mobile, email, id))
+             con.commit()
+             flash('User Updated without New Photo', 'success')
+             return redirect(url_for("users"))
 
-    con = sql.connect("instance/flask_auth4.db")
+
+    con = sql.connect("instance/flask_auth3.db")
     con.row_factory = sql.Row
     cur = con.cursor()
     cur.execute("select * from user where id=?", (id,))
     data = cur.fetchone()
     return render_template("edit_user.html", name=name, role=role, users=user, datas=data)
-
 
 @app.route("/delete_user/<string:id>", methods=['GET'])
 def delete_user(id):
