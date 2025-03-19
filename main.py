@@ -333,7 +333,7 @@ def edit_user(id,name,role):
                 destination_path = f"static/uploads/{fileobj.filename}"
                 fileobj.save(destination_path)
 
-                con = sql.connect("instance/flask_auth3.db")
+                con = sql.connect("instance/flask_auth4.db")
                 cur = con.cursor()
                 cur.execute("update user set name=?,mobile=?,email=?,imagelink=? where id=?",
                             (name, mobile, email, destination_path, id))
@@ -344,7 +344,7 @@ def edit_user(id,name,role):
                 flash('only images are accepted', 'danger')
                 return redirect(url_for("users"))
         else:
-             con = sql.connect("instance/flask_auth3.db")
+             con = sql.connect("instance/flask_auth4.db")
              cur = con.cursor()
              cur.execute("update user set name=?,mobile=?,email=? where id=?",
                             (name, mobile, email, id))
@@ -353,12 +353,13 @@ def edit_user(id,name,role):
              return redirect(url_for("users"))
 
 
-    con = sql.connect("instance/flask_auth3.db")
+    con = sql.connect("instance/flask_auth4.db")
     con.row_factory = sql.Row
     cur = con.cursor()
     cur.execute("select * from user where id=?", (id,))
     data = cur.fetchone()
     return render_template("edit_user.html", name=name, role=role, users=user, datas=data)
+
 
 @app.route("/delete_user/<string:id>", methods=['GET'])
 def delete_user(id):
